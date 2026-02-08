@@ -8,6 +8,11 @@ import { authRoutes } from '../app/modules/auth/auth.route.js';
 import { bannerRoutes } from '../app/modules/banner/banner.route.js';
 import { cartRoutes } from '../app/modules/cart/cart.route.js';
 import { orderRoutes } from '../app/modules/order/order.route.js';
+import { contactRoutes } from '../app/modules/contact/contact.route.js';
+import { privacyRoutes } from '../app/modules/privacy/privacy.route.js';
+import { conditionsRoutes } from '../app/modules/conditions/conditions.route.js';
+import { returnRoutes } from '../app/modules/return/return.route.js';
+import { orderPolicyRoutes } from '../app/modules/orderPolicy/orderPolicy.route.js';
 
 
 const rounter = Router();
@@ -51,6 +56,26 @@ const modulRouter = [
   {
     path: '/cart',
     route: cartRoutes,
+  },
+  {
+    path: '/contact',
+    route: contactRoutes,
+  },
+  {
+    path: '/privacy',
+    route: privacyRoutes,
+  },
+  {
+    path: '/conditions',
+    route: conditionsRoutes,
+  },
+  {
+    path: '/return',
+    route: returnRoutes,
+  },
+  {
+    path: '/order-policy',
+    route: orderPolicyRoutes,
   },
  
 ];

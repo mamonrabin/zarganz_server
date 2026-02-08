@@ -92,27 +92,6 @@ const getSingleCategoryBySlug = async (
   }
 };
 
-// const updateSingleCategory = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction,
-// ) => {
-//   try {
-//     const { id } = req.params;
-//     const updateCategory = req.body;
-//     const result = await categoryService.updateSingleCategoryByDB(
-//       id as string,
-//       updateCategory,
-//     );
-//     res.status(200).json({
-//       success: true,
-//       message: 'update sinngle category successfully',
-//       data: result,
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
 
 
 const updateSingleCategory = async (

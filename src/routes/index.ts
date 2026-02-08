@@ -6,6 +6,8 @@ import { brandRoutes } from '../app/modules/brand/brand.route.js';
 import { userRoutes } from '../app/modules/user/user.route.js';
 import { authRoutes } from '../app/modules/auth/auth.route.js';
 import { bannerRoutes } from '../app/modules/banner/banner.route.js';
+import { cartRoutes } from '../app/modules/cart/cart.route.js';
+import { orderRoutes } from '../app/modules/order/order.route.js';
 
 
 const rounter = Router();
@@ -41,6 +43,14 @@ const modulRouter = [
   {
     path: '/banner',
     route: bannerRoutes,
+  },
+  {
+    path: '/order',
+    route: orderRoutes,
+  },
+  {
+    path: '/cart',
+    route: cartRoutes,
   },
  
 ];

@@ -13,6 +13,9 @@ import { privacyRoutes } from '../app/modules/privacy/privacy.route.js';
 import { conditionsRoutes } from '../app/modules/conditions/conditions.route.js';
 import { returnRoutes } from '../app/modules/return/return.route.js';
 import { orderPolicyRoutes } from '../app/modules/orderPolicy/orderPolicy.route.js';
+import { socialRoutes } from '../app/modules/social/social.route.js';
+import { couponRoutes } from '../app/modules/coupon/coupon.route.js';
+import { wishlistRoutes } from '../app/modules/wishlist/wishlist.route.js';
 
 
 const rounter = Router();
@@ -58,6 +61,10 @@ const modulRouter = [
     route: cartRoutes,
   },
   {
+    path: '/wishlist',
+    route: wishlistRoutes,
+  },
+  {
     path: '/contact',
     route: contactRoutes,
   },
@@ -76,6 +83,14 @@ const modulRouter = [
   {
     path: '/order-policy',
     route: orderPolicyRoutes,
+  },
+  {
+    path: '/social',
+    route: socialRoutes,
+  },
+  {
+    path: '/coupon',
+    route: couponRoutes,
   },
  
 ];

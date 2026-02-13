@@ -56,6 +56,25 @@ const getAllCategory = async (
   }
 };
 
+const getAllCategoryByPagination = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const result = await categoryService.getAllCategoryByPagination(
+      req.query,
+    );
+    res.status(200).json({
+      success: true,
+      message: 'all category get successfully',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getSingleCategory = async (
   req: Request,
   res: Response,
@@ -144,6 +163,7 @@ const deleteSingleCategory = async (
 export const categoryController = {
   createCategory,
   getAllCategory,
+  getAllCategoryByPagination,
   getSingleCategory,
   getSingleCategoryBySlug,
   updateSingleCategory,

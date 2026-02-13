@@ -1,5 +1,16 @@
-import type { TCategory } from "./category.interface.js";
-import { categoryModel } from "./category.model.js";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { buildAggregatePipeline } from '../../../utilities/buildAggregatePipeline.js';
+import { getPaginationOptions } from '../../../utilities/pagination.js';
+import { QueryBuilder } from '../../../utilities/QueryBuilder.js';
+import { getSortOptions } from '../../../utilities/sort.js';
+import type { TCategory } from './category.interface.js';
+import { categoryModel } from './category.model.js';
+
+/* ---------- Generic Query Products ---------- */
+
+const queryCategory = async (pipeline: any[]) => {
+  return await categoryModel.aggregate(pipeline);
+};
 
 const createCategoryByDB = async (category: TCategory) => {
   const result = await categoryModel.create(category);
@@ -12,6 +23,24 @@ const getAllCategoryByDB = async () => {
 const getSingleCategoryByDB = async (id: string) => {
   const result = await categoryModel.findById(id);
   return result;
+};
+
+const getAllCategoryByPagination = async (query: Record<string, unknown>) => {
+  const { sortField, sortOrder } = getSortOptions(query.sortBy as string);
+  const { skip, limit, page } = getPaginationOptions(query);
+
+  const pipeline = await buildAggregatePipeline(query, skip, limit, {
+    [sortField]: sortOrder,
+  });
+
+  const data = await queryCategory(pipeline);
+
+  const total = await categoryModel.countDocuments(await QueryBuilder(query));
+
+  return {
+    data,
+    meta: { total, page, limit },
+  };
 };
 
 const getSingleCategoryBySlug = async (slug: string) => {
@@ -41,4 +70,5 @@ export const categoryService = {
   getSingleCategoryBySlug,
   updateSingleCategoryByDB,
   deleteSingleCategoryByDB,
+  getAllCategoryByPagination,
 };

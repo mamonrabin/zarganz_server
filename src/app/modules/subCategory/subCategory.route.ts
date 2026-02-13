@@ -1,12 +1,11 @@
 import express from 'express';
 import { subCategoryController } from './subCategory.controller.js';
 
-
-
 const router = express.Router();
 
 router.post('/create-sub-category', subCategoryController.createSubCategory);
 router.get('/', subCategoryController.getAllSubCategory);
+router.get('/pagination', subCategoryController.getAllSubCategoryByPagination);
 router.get('/:id', subCategoryController.getSingleSubCategory);
 router.get(
   '/subCategorySlug/:slug',

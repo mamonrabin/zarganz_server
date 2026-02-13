@@ -37,6 +37,26 @@ const getAllSubCategory = async (
   }
 };
 
+
+const getAllSubCategoryByPagination = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const result = await subCategoryService.getAllSubCategoryByPagination(
+      req.query,
+    );
+    res.status(200).json({
+      success: true,
+      message: 'all SubCategory get successfully',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getSingleSubCategory = async (
   req: Request,
   res: Response,
@@ -116,6 +136,7 @@ const deleteSingleSubCategory = async (
 export const subCategoryController = {
   createSubCategory,
   getAllSubCategory,
+  getAllSubCategoryByPagination,
   getSingleSubCategory,
   getSingleSubCategoryBySlug,
   updateSingleSubCategory,

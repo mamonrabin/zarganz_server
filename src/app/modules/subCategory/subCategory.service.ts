@@ -1,5 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { buildAggregatePipeline } from "../../../utilities/buildAggregatePipeline.js";
+import { getPaginationOptions } from "../../../utilities/pagination.js";
+import { QueryBuilder } from "../../../utilities/QueryBuilder.js";
+import { getSortOptions } from "../../../utilities/sort.js";
 import type { TSubCategory } from "./subCategory.interface.js";
 import { subCategoryModel } from "./subCategory.model.js";
+
+const querySubCategory = async (pipeline: any[]) => {
+  return await subCategoryModel.aggregate(pipeline);
+};
 
 
 const createSubCategoryByDB = async (subCategory: TSubCategory) => {
@@ -10,6 +19,27 @@ const getAllSubCategoryByDB = async () => {
   const result = await subCategoryModel.find().populate('category');
   return result;
 };
+
+
+const getAllSubCategoryByPagination = async (query: Record<string, unknown>) => {
+  const { sortField, sortOrder } = getSortOptions(query.sortBy as string);
+  const { skip, limit, page } = getPaginationOptions(query);
+
+  const pipeline = await buildAggregatePipeline(query, skip, limit, {
+    [sortField]: sortOrder,
+  });
+
+  const data = await querySubCategory(pipeline);
+
+  const total = await subCategoryModel.countDocuments(await QueryBuilder(query));
+
+  return {
+    data,
+    meta: { total, page, limit },
+  };
+};
+
+
 const getSingleSubCategoryByDB = async (id: string) => {
   const result = await subCategoryModel.findById(id).populate('category');
   return result;
@@ -38,6 +68,7 @@ const deleteSingleSubCategoryByDB = async (id: string) => {
 export const subCategoryService = {
   createSubCategoryByDB,
   getAllSubCategoryByDB,
+  getAllSubCategoryByPagination,
   getSingleSubCategoryByDB,
   getSingleSubCategoryBySlug,
   updateSingleSubCategoryByDB,

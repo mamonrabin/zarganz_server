@@ -52,6 +52,24 @@ const getAllProduct = async (
     next(error);
   }
 };
+const getAllProductByPagination = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const result = await productService.getAllProductByBDWithPagination(
+      req.query,
+    );
+    res.status(200).json({
+      success: true,
+      message: 'all product get successfully',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 const getNewArrivalProducts = async (
   req: Request,
@@ -125,24 +143,7 @@ const getTrendingProducts = async (
   }
 };
 
-const getAllProductByPagination = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const result = await productService.getAllProductByBDWithPagination(
-      req.query,
-    );
-    res.status(200).json({
-      success: true,
-      message: 'all product get successfully',
-      data: result,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+
 
 const getReletiveProduct = async (
   req: Request,

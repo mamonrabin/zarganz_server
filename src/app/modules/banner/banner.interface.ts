@@ -6,6 +6,7 @@ export type TBanner = {
   category?: ObjectId;
   subCategory?: ObjectId;
   brand?: ObjectId;
+  description?: string;
   status: 'active' | 'inactive';
-  type: 'main' | 'offer' | 'promotion';
+  bannertype: 'main' | 'offer' | 'promotion';
 };

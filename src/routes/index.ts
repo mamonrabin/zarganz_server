@@ -16,6 +16,7 @@ import { orderPolicyRoutes } from '../app/modules/orderPolicy/orderPolicy.route.
 import { socialRoutes } from '../app/modules/social/social.route.js';
 import { couponRoutes } from '../app/modules/coupon/coupon.route.js';
 import { wishlistRoutes } from '../app/modules/wishlist/wishlist.route.js';
+import { campaignRoutes } from '../app/modules/campaign/campaign.route.js';
 
 
 const rounter = Router();
@@ -91,6 +92,10 @@ const modulRouter = [
   {
     path: '/coupon',
     route: couponRoutes,
+  },
+  {
+    path: '/campaign',
+    route: campaignRoutes,
   },
  
 ];

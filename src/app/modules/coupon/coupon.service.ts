@@ -1,5 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { buildAggregatePipeline } from "../../../utilities/buildAggregatePipeline.js";
+import { getPaginationOptions } from "../../../utilities/pagination.js";
+import { QueryBuilder } from "../../../utilities/QueryBuilder.js";
+import { getSortOptions } from "../../../utilities/sort.js";
 import type { TCoupon } from "./coupon.interface.js";
 import { CouponModel } from "./coupon.model.js";
+
+
+
+const queryCoupon = async (pipeline: any[]) => {
+  return await CouponModel.aggregate(pipeline);
+};
 
 /* ---------- Create Coupon ---------- */
 const createCouponByDB = async (coupon: TCoupon) => {
@@ -11,6 +22,24 @@ const createCouponByDB = async (coupon: TCoupon) => {
 const getAllCouponByDB = async () => {
   const result = await CouponModel.find().sort({ createdAt: -1 });
   return result;
+};
+
+const getAllCouponByPagination = async (query: Record<string, unknown>) => {
+  const { sortField, sortOrder } = getSortOptions(query.sortBy as string);
+  const { skip, limit, page } = getPaginationOptions(query);
+
+  const pipeline = await buildAggregatePipeline(query, skip, limit, {
+    [sortField]: sortOrder,
+  });
+
+  const data = await queryCoupon(pipeline);
+
+  const total = await CouponModel.countDocuments(await QueryBuilder(query));
+
+  return {
+    data,
+    meta: { total, page, limit },
+  };
 };
 
 /* ---------- Get Single Coupon ---------- */
@@ -59,6 +88,7 @@ const increaseCouponUsedByDB = async (id: string) => {
 export const couponService = {
   createCouponByDB,
   getAllCouponByDB,
+  getAllCouponByPagination,
   getSingleCouponByDB,
   getCouponByCodeFromDB,
   updateCouponByDB,

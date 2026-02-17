@@ -40,6 +40,25 @@ const getAllBrand = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const getAllBrandByPagination = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const result = await brandService.getAllBrandByPagination(
+      req.query,
+    );
+    res.status(200).json({
+      success: true,
+      message: 'all brand get successfully',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getSingleBrand = async (
   req: Request,
   res: Response,
@@ -121,6 +140,7 @@ const deleteSingleBrand = async (
 export const brandController = {
   createBrand,
   getAllBrand,
+  getAllBrandByPagination,
   getSingleBrand,
   getSingleBrandBySlug,
   updateSingleBrand,

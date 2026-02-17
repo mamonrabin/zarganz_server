@@ -1,5 +1,5 @@
-import { Schema, model } from "mongoose";
-import type { TCoupon } from "./coupon.interface.js";
+import { Schema, model } from 'mongoose';
+import type { TCoupon } from './coupon.interface.js';
 
 const couponSchema = new Schema<TCoupon>(
   {
@@ -19,7 +19,7 @@ const couponSchema = new Schema<TCoupon>(
 
     discountType: {
       type: String,
-      enum: ["Percentage", "FixedAmount"],
+      enum: ['Percentage', 'flat'],
       required: true,
     },
 
@@ -37,7 +37,7 @@ const couponSchema = new Schema<TCoupon>(
 
     perUserLimit: {
       type: Number,
-      required: true,
+      default: 1,
       min: 1,
     },
 
@@ -53,13 +53,25 @@ const couponSchema = new Schema<TCoupon>(
 
     couponType: {
       type: String,
-      enum: ["brand", "category", "subCategory"],
-      required: true,
+      enum: ['brand', 'category', 'subCategory'],
+      // required: true,
     },
 
     userInfo: {
       type: Schema.Types.ObjectId,
-      ref: "user",
+      ref: 'user',
+    },
+    categoryID: {
+      type: Schema.Types.ObjectId,
+      ref: 'category',
+    },
+    subCategoryID: {
+      type: Schema.Types.ObjectId,
+      ref: 'subCategory',
+    },
+    brandID: {
+      type: Schema.Types.ObjectId,
+      ref: 'brand',
     },
 
     isActive: {
@@ -69,7 +81,7 @@ const couponSchema = new Schema<TCoupon>(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-export const CouponModel = model<TCoupon>("coupon", couponSchema);
+export const CouponModel = model<TCoupon>('coupon', couponSchema);

@@ -12,6 +12,7 @@ const subCategorySchema = new Schema<TSubCategory>(
       required: true,
     },
     title: { type: String },
+    image: { type: String },
     slug: { type: String, unique: true },
   },
   {

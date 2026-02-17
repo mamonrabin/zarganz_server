@@ -2,14 +2,17 @@ import type { ObjectId } from 'mongoose';
 
 export type TCoupon = {
   code: string;
+  discountType: 'Percentage' | 'flat';
   discount: number;
   useLimit: number;
-  used?: number;
-  perUserLimit: number;
   startDate: Date;
   expireDate: Date;
-  discountType: 'Percentage' | 'FixedAmount';
-  userInfo?: ObjectId;
   couponType: 'brand' | 'category' | 'subCategory';
+  used?: number;
+  perUserLimit?: number;
+  userInfo?: ObjectId;
+  categoryID?: ObjectId;
+  subCategoryID?: ObjectId;
+  brandID?: ObjectId;
   isActive: boolean;
 };

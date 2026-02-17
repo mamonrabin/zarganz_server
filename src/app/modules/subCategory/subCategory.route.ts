@@ -1,9 +1,10 @@
 import express from 'express';
 import { subCategoryController } from './subCategory.controller.js';
+import { upload } from '../../config/multer.js';
 
 const router = express.Router();
 
-router.post('/create-sub-category', subCategoryController.createSubCategory);
+router.post('/create-sub-category', upload.single('image'), subCategoryController.createSubCategory);
 router.get('/', subCategoryController.getAllSubCategory);
 router.get('/pagination', subCategoryController.getAllSubCategoryByPagination);
 router.get('/:id', subCategoryController.getSingleSubCategory);

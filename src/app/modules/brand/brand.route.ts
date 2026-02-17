@@ -13,6 +13,7 @@ router.post(
   brandController.createBrand,
 );
 router.get('/', brandController.getAllBrand);
+router.get('/pagination', brandController.getAllBrandByPagination);
 router.get('/:id', brandController.getSingleBrand);
 router.get('/brandSlug/:slug', brandController.getSingleBrandBySlug);
 // router.get('/slugTask/:slug', taskController.getSingleTaskBySlug);

@@ -1,6 +1,6 @@
-import type { NextFunction, Request, Response } from "express";
-import { subCategoryService } from "./subCategory.service.js";
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { NextFunction, Request, Response } from 'express';
+import { subCategoryService } from './subCategory.service.js';
 
 const createSubCategory = async (
   req: Request,
@@ -9,16 +9,30 @@ const createSubCategory = async (
 ) => {
   try {
     const SubCategory = req.body;
-    const result = await subCategoryService.createSubCategoryByDB(SubCategory);
+
+    let imagePath = "";
+
+    // ✅ Image optional
+    if (req.file) {
+      const file = req.file as any;
+      imagePath = file?.path;
+    }
+
+    const result = await subCategoryService.createSubCategoryByDB({
+      ...SubCategory,
+      ...(imagePath && { image: imagePath }), // only add if exists
+    } as any);
+
     res.status(200).json({
       success: true,
-      message: 'SubCategory created successfully',
+      message: "SubCategory created successfully",
       data: result,
     });
   } catch (error) {
     next(error);
   }
 };
+
 
 const getAllSubCategory = async (
   req: Request,
@@ -36,7 +50,6 @@ const getAllSubCategory = async (
     next(error);
   }
 };
-
 
 const getAllSubCategoryByPagination = async (
   req: Request,
@@ -64,7 +77,9 @@ const getSingleSubCategory = async (
 ) => {
   try {
     const { id } = req.params;
-    const result = await subCategoryService.getSingleSubCategoryByDB(id as string);
+    const result = await subCategoryService.getSingleSubCategoryByDB(
+      id as string,
+    );
     res.status(200).json({
       success: true,
       message: 'get sinngle SubCategory successfully',
@@ -82,7 +97,9 @@ const getSingleSubCategoryBySlug = async (
 ) => {
   try {
     const { slug } = req.params;
-    const result = await subCategoryService.getSingleSubCategoryBySlug(slug as string);
+    const result = await subCategoryService.getSingleSubCategoryBySlug(
+      slug as string,
+    );
     res.status(200).json({
       success: true,
       message: 'get single SubCategory by slug successfully',
@@ -122,7 +139,9 @@ const deleteSingleSubCategory = async (
 ) => {
   try {
     const { id } = req.params;
-    const result = await subCategoryService.deleteSingleSubCategoryByDB(id as string);
+    const result = await subCategoryService.deleteSingleSubCategoryByDB(
+      id as string,
+    );
     res.status(200).json({
       success: true,
       message: 'delete sinngle SubCategory successfully',

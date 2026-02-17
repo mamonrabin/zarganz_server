@@ -32,6 +32,25 @@ const getAllCoupon = async (_req: Request, res: Response,next: NextFunction) => 
   }
 };
 
+const getAllCouponByPagination = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const result = await couponService.getAllCouponByPagination(
+      req.query,
+    );
+    res.status(200).json({
+      success: true,
+      message: 'all coupons get successfully',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 /* ---------- Get Single Coupon ---------- */
 const getSingleCoupon = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -130,6 +149,7 @@ const deleteCoupon = async (req: Request, res: Response, next: NextFunction) => 
 export const couponController = {
   createCoupon,
   getAllCoupon,
+  getAllCouponByPagination,
   getSingleCoupon,
   getCouponByCode,
   updateCoupon,

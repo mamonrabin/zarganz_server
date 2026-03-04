@@ -17,7 +17,7 @@ router.post(
 
 /* ---------- Get Products ---------- */
 router.get('/', productController.getAllProduct);
-router.get('/fillter', productController.getAllProductByPagination);
+router.get('/pagination', productController.getAllProductByPagination);
 
 router.get('/new-arrivals', productController.getNewArrivalProducts);
 router.get('/discount-products', productController.getDiscountProducts);

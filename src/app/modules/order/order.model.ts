@@ -10,9 +10,9 @@ const orderSchema = new Schema<TOrder>(
       unique: true,
       index: true,
     },
-    userRef: {
+    userID: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: 'user',
     },
     isGuestOrder: {
       type: Boolean,
@@ -21,14 +21,14 @@ const orderSchema = new Schema<TOrder>(
 
     products: [
       {
-        productRef: {
+        productID: {
           type: Schema.Types.ObjectId,
           ref: 'product',
           required: true,
         },
         quantity: { type: Number, required: true },
-        // color: { type: String },
-        // size: { type: String },
+        color: { type: String },
+        size: { type: String },
       },
     ],
 

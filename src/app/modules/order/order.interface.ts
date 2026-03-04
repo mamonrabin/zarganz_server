@@ -1,8 +1,10 @@
 import type { ObjectId } from 'mongoose';
 
 export type TOrderProduct = {
-  productRef: ObjectId;
+  productID: ObjectId; 
   quantity: number;
+  color?: string;
+  size?: string;
 };
 
 export type TPaymentInfo = {
@@ -21,7 +23,7 @@ export type TDeliveryInfo = {
 
 export type TOrder = {
   orderId: string;
-  userRef?: ObjectId;
+  userID?: ObjectId;
   isGuestOrder: boolean;
 
   products: TOrderProduct[];

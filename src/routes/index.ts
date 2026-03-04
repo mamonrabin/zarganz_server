@@ -17,6 +17,9 @@ import { socialRoutes } from '../app/modules/social/social.route.js';
 import { couponRoutes } from '../app/modules/coupon/coupon.route.js';
 import { wishlistRoutes } from '../app/modules/wishlist/wishlist.route.js';
 import { campaignRoutes } from '../app/modules/campaign/campaign.route.js';
+import { blogRoutes } from '../app/modules/blog/blog.route.js';
+import { reviewRoutes } from '../app/modules/review/review.route.js';
+import { courierRoutes } from '../app/modules/courier/courier.route.js';
 
 
 const rounter = Router();
@@ -96,6 +99,18 @@ const modulRouter = [
   {
     path: '/campaign',
     route: campaignRoutes,
+  },
+  {
+    path: '/blog',
+    route: blogRoutes,
+  },
+  {
+    path: '/review',
+    route: reviewRoutes,
+  },
+  {
+    path: '/courier',
+    route: courierRoutes,
   },
  
 ];

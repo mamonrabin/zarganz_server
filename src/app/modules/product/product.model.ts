@@ -8,30 +8,41 @@ const STOCK_STATUS = ['in stock', 'out of stock', 'pre order'] as const;
 const LABELS = [
   'New',
   'Trending',
-  'Limited Stock',
+  'Limited_Stock',
   'Sale',
   'Featured',
 ] as const;
 
+const DISCOUNT_TYPES = ['flat', 'percentage'] as const;
+
 const productSchema = new Schema<TProduct>(
   {
+    /* ---------- Core ---------- */
     title: { type: String, required: true, trim: true },
-
     slug: { type: String, unique: true, index: true },
 
-    quantity: { type: Number, required: true, min: 0 },
+    quantity: { type: Number, required: true, min: 0, default: 0 },
     soldQuantity: { type: Number, default: 0, min: 0 },
 
     mrpPrice: { type: Number, required: true, min: 0 },
-    discount: { type: Number, min: 0, max: 100 },
 
+    discount: { type: Number, min: 0, default: 0 },
+    discountType: {
+      type: String,
+      enum: DISCOUNT_TYPES,
+      default: 'percentage',
+    },
+
+    /* ---------- Details ---------- */
     description: { type: String, required: true },
     short_details: { type: String },
 
+    /* ---------- Relations ---------- */
     category: { type: Schema.Types.ObjectId, ref: 'category', required: true },
     subCategory: { type: Schema.Types.ObjectId, ref: 'subCategory' },
     brand: { type: Schema.Types.ObjectId, ref: 'brand', required: true },
 
+    /* ---------- Media ---------- */
     thumbal_image: { type: String, required: true },
     backview_image: { type: String },
     images: { type: [String], default: [] },
@@ -39,8 +50,21 @@ const productSchema = new Schema<TProduct>(
     video_url: { type: String },
     size_chart: { type: String },
 
+    /* ---------- Shipping ---------- */
     freeShipping: { type: Boolean, default: false },
     weight: { type: String },
+
+    /* ---------- Inventory ---------- */
+    inventoryType: { type: String },
+
+    inventories: [
+      {
+        color: String,
+        colorName: String,
+        size: String,
+        quantity: { type: Number, default: 0 },
+      },
+    ],
 
     sku: { type: String, unique: true, index: true },
     barcode: { type: String, unique: true },
@@ -52,39 +76,54 @@ const productSchema = new Schema<TProduct>(
       index: true,
     },
 
+    /* ---------- Marketing ---------- */
     labels: { type: String, enum: LABELS },
 
+    /* ---------- System ---------- */
     isDeleted: { type: Boolean, default: false },
   },
   {
     timestamps: true,
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
   },
 );
 
-/* ---------- Virtuals ---------- */
-productSchema.virtual('price').get(function () {
-  if (this.discount != null) {
-    return this.mrpPrice - (this.mrpPrice * this.discount) / 100;
-  }
-  return this.mrpPrice;
-});
-
-productSchema.virtual('availableQuantity').get(function () {
-  return Math.max(this.quantity - (this.soldQuantity || 0), 0);
-});
-
-/* ---------- FAST middleware (save only) ---------- */
 productSchema.pre('save', function () {
   const product = this as HydratedDocument<TProduct>;
 
+  /* ---------- Auto Quantity from Inventory ---------- */
+  if (product.inventories?.length) {
+    product.quantity = product.inventories.reduce(
+      (total, item) => total + (item.quantity || 0),
+      0,
+    );
+  }
+
+  /* ---------- PRICE ---------- */
+  if (!product.discount || product.discount === 0) {
+    product.price = product.mrpPrice;
+  } else if (product.discountType === 'flat') {
+    product.price = Math.max(product.mrpPrice - product.discount, 0);
+  } else {
+    product.price = Math.max(
+      product.mrpPrice - (product.mrpPrice * product.discount) / 100,
+      0,
+    );
+  }
+
+  /* ---------- AVAILABLE QUANTITY ---------- */
+  product.availableQuantity = Math.max(
+    product.quantity - (product.soldQuantity || 0),
+    0,
+  );
+
+  /* ---------- Slug ---------- */
   if ((product.isNew || product.isModified('title')) && product.title) {
     product.slug = `${generateSlug(product.title)}-${Date.now()
       .toString()
       .slice(-5)}`;
   }
 
+  /* ---------- SKU ---------- */
   if (!product.sku && product.title && product.brand) {
     product.sku = `${product.title
       .replace(/[^A-Z0-9]/gi, '')
@@ -95,14 +134,15 @@ productSchema.pre('save', function () {
       .toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`;
   }
 
+  /* ---------- Barcode ---------- */
   if (!product.barcode && product.sku) {
     product.barcode = product.sku.replace(/[^A-Z0-9]/gi, '');
   }
 
+  /* ---------- Stock Status ---------- */
   product.stock_status =
-    product.quantity - (product.soldQuantity || 0) <= 0
-      ? 'out of stock'
-      : 'in stock';
+    product.availableQuantity <= 0 ? 'out of stock' : 'in stock';
 });
+
 
 export const productModel = model<TProduct>('product', productSchema);

@@ -57,6 +57,36 @@ export const buildAggregatePipeline = async (
       },
     },
     { $unwind: { path: "$brandID", preserveNullAndEmptyArrays: true } },
+    // ✅ Populate userID
+    {
+      $lookup: {
+        from: "users",
+        localField: "userID",
+        foreignField: "_id",
+        as: "userID",
+      },
+    },
+    { $unwind: { path: "$userID", preserveNullAndEmptyArrays: true } },
+    // ✅ Populate productID
+    {
+      $lookup: {
+        from: "products",
+        localField: "productID",
+        foreignField: "_id",
+        as: "productID",
+      },
+    },
+    { $unwind: { path: "$productID", preserveNullAndEmptyArrays: true } },
+    // ✅ Populate productID inside products array for orders 
+    {
+      $lookup: {
+        from: "products",
+        localField: "products.productID",
+        foreignField: "_id",
+        as: "products.productID",
+      },
+    },
+    { $unwind: { path: "$products.productID", preserveNullAndEmptyArrays: true } },
 
     // ✅ Sort
     { $sort: sort },

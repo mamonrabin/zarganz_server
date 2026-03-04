@@ -64,9 +64,23 @@ const resetPassword = async (req: Request, res: Response, next: NextFunction) =>
   }
 };
 
+const logoutC = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    await authServices.logout(); // call service
+
+    return res.status(200).json({
+      success: true,
+      message: "Logged out successfully",
+    });
+  } catch (error) {
+    next(error); // pass error to error handler
+  }
+};
+
 export const authController = {
   signIn,
   signUp,
   forgotPassword,
   resetPassword,
+  logoutC
 };

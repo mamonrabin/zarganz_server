@@ -41,6 +41,26 @@ const getAllOrder = async (
   }
 };
 
+
+const getAllOrderByPagination = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const result = await orderService.getAllOrderByPagination(
+      req.query,
+    );
+    res.status(200).json({
+      success: true,
+      message: 'all orders get successfully',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 /* ---------- Get Single Order ---------- */
 const getSingleOrder = async (
   req: Request,
@@ -129,6 +149,7 @@ const deleteSingleOrder = async (
 export const orderController = {
   createOrder,
   getAllOrder,
+  getAllOrderByPagination,
   getSingleOrder,
   updateSingleOrder,
   deleteSingleOrder,

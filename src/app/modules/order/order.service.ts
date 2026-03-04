@@ -1,7 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose from 'mongoose';
 import type { TOrder } from './order.interface.js';
 import { orderModel } from './order.model.js';
 import { productModel } from '../product/product.model.js';
+import { getSortOptions } from '../../../utilities/sort.js';
+import { getPaginationOptions } from '../../../utilities/pagination.js';
+import { buildAggregatePipeline } from '../../../utilities/buildAggregatePipeline.js';
+import { QueryBuilder } from '../../../utilities/QueryBuilder.js';
+
+const queryOrder = async (pipeline: any[]) => {
+  return await orderModel.aggregate(pipeline);
+};
+
 
 /* ---------- Create Order ---------- */
 const createOrderByBD = async (order: TOrder) => {
@@ -18,12 +28,12 @@ const createOrderByBD = async (order: TOrder) => {
 
     for (const item of order.products) {
       const product = await productModel
-        .findById(item.productRef)
+        .findById(item.productID)
         .session(session)
         .select('quantity soldQuantity title');
 
       if (!product) {
-        throw new Error(`Product not found: ${item.productRef}`);
+        throw new Error(`Product not found: ${item.productID}`);
       }
 
       const available =
@@ -35,7 +45,7 @@ const createOrderByBD = async (order: TOrder) => {
 
       bulkOperations.push({
         updateOne: {
-          filter: { _id: item.productRef },
+          filter: { _id: item.productID },
           update: {
             $inc: { soldQuantity: item.quantity },
           },
@@ -64,14 +74,35 @@ const getAllOrderByBD = async () => {
   return orderModel
     .find()
     .sort({ createdAt: -1 })
-    .lean();
+    .lean()
+    .populate('products.productID', 'title price')
 };
+
+const getAllOrderByPagination = async (query: Record<string, unknown>) => {
+  const { sortField, sortOrder } = getSortOptions(query.sortBy as string);
+  const { skip, limit, page } = getPaginationOptions(query);
+
+  const pipeline = await buildAggregatePipeline(query, skip, limit, {
+    [sortField]: sortOrder,
+  });
+
+  const data = await queryOrder(pipeline);
+
+  const total = await orderModel.countDocuments(await QueryBuilder(query));
+
+  return {
+    data,
+    meta: { total, page, limit },
+  };
+};
+
+
 
 /* ---------- Get Single Order ---------- */
 const getSingleOrderByBD = async (id: string) => {
   return orderModel
     .findById(id)
-    .populate('products.productRef', 'title price')
+    .populate('products.productID', 'title price')
     .lean();
 };
 
@@ -94,6 +125,7 @@ const deleteSingleOrderByBD = async (id: string) => {
 export const orderService = {
   createOrderByBD,
   getAllOrderByBD,
+  getAllOrderByPagination,
   getSingleOrderByBD,
   updateSingleOrderByBD,
   deleteSingleOrderByBD,

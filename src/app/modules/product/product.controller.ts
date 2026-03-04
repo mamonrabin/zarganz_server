@@ -20,6 +20,10 @@ export const createProduct = async (req: Request, res: Response) => {
       images: files?.images?.map(f => f.path) || [],
     };
 
+    if (req.body.inventories) {
+      productData.inventories = JSON.parse(req.body.inventories);
+    }
+
     const product = await productService.createProductByBD(productData);
 
     res.status(201).json({

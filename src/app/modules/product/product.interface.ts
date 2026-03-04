@@ -3,6 +3,13 @@
 
 import type { ObjectId } from 'mongoose';
 
+export type TInventory = {
+  color?: string;
+  colorName?: string;
+  size?: string;
+  quantity: number;
+};
+
 
 
 export type TProduct = {
@@ -16,9 +23,11 @@ export type TProduct = {
   mrpPrice: number;
   discount?: number;
 
-  /* ---------- Virtuals (read-only) ---------- */
-  price?: number;              // virtual
-  availableQuantity?: number;  // virtual
+  discountType?: 'flat' | 'percentage';
+
+ 
+  price?: number;              
+  availableQuantity?: number; 
 
   /* ---------- Details ---------- */
   short_details: string;
@@ -45,8 +54,11 @@ export type TProduct = {
   barcode?: string;
   stock_status?: 'in stock' | 'out of stock' | 'pre order';
 
+  inventoryType?: string;
+  inventories?: TInventory[];
+
   /* ---------- Marketing ---------- */
-  labels?: 'New' | 'Trending' | 'Limited Stock' | 'Sale' | 'Featured';
+  labels?: 'New' | 'Trending' | 'Limited_Stock' | 'Sale' | 'Featured';
 
   /* ---------- System ---------- */
   isDeleted?: boolean;

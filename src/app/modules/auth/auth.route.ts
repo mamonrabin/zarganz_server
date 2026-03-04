@@ -15,5 +15,6 @@ router.post('/login', (req, res, next) => {
 
 router.post('/forgot-password', authController.forgotPassword);
 router.post('/reset-password', authController.resetPassword); 
+router.post('/logout', authController.logoutC);
 
 export const authRoutes = router;

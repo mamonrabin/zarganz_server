@@ -139,9 +139,16 @@ const resetPassword = async (
   return true;
 };
 
+const logout = async () => {
+  // Since JWT is stateless, there's nothing to do in DB.
+  // Just return true to indicate success.
+  return true;
+};
+
 export const authServices = {
   login,
   signup,
   forgotPassword,
   resetPassword,
+  logout,
 };

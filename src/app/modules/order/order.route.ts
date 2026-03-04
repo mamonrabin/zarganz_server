@@ -9,6 +9,7 @@ router.post(
   orderController.createOrder,
 );
 router.get('/', orderController.getAllOrder);
+router.get('/pagination', orderController.getAllOrderByPagination);
 router.get('/:id', orderController.getSingleOrder);
 router.put('/:id', orderController.updateSingleOrder);
 router.delete('/:id', orderController.deleteSingleOrder);
